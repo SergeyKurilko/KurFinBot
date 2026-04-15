@@ -5,7 +5,7 @@ from handlers.commands import start, admin
 from handlers.boss_callbacks import router as boss_callbacks_router
 from handlers.boss_handlers import router as boss_handlers_router
 from handlers.employee_callbacks import router as employee_callbacks_router
-
+from handlers.boss_cash_accounts.callbacks import router as boss_cash_accounts_callbacks
 
 def setup_handlers(dp: Dispatcher):
     """
@@ -17,4 +17,5 @@ def setup_handlers(dp: Dispatcher):
     dp.include_router(boss_callbacks_router)
     dp.include_router(boss_handlers_router)
     dp.include_router(employee_callbacks_router)
+    dp.include_router(boss_cash_accounts_callbacks)
 

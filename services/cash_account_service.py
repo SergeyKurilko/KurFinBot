@@ -19,3 +19,9 @@ class CashAccountService:
             return await self.repo.create_new_account(title, balance, currency)
         except Exception as e:
             return None
+
+    async def get_cash_account_by_id(self, cash_account_id: int) -> CashAccount | None:
+        return await self.repo.get_cash_account_by_id(cash_account_id)
+
+    async def get_all_cash_accounts(self):
+        return await self.repo.get_all_cash_accounts()
