@@ -1,6 +1,14 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, Boolean, Integer, DateTime, ForeignKey
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Integer,
+    DateTime,
+    ForeignKey,
+    String,
+    CheckConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 
 
@@ -33,3 +41,12 @@ class Money(Base):
 
     # Добавляем связь
     user: Mapped["User"] = relationship("User", back_populates="money")
+
+
+class CashAccount(Base):
+    __tablename__ = "cash_account"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(50), nullable=False)
+    balance: Mapped[int] = mapped_column(Integer, nullable=False)
+    currency: Mapped[str] = mapped_column(nullable=False, default="RUB")
+    __table_args__ = (CheckConstraint("balance >= 0", name="check_balance_positive"),)
