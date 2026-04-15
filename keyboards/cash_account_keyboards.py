@@ -12,8 +12,9 @@ def get_cash_accounts_keyboard(cash_accounts: list[CashAccount]):
             callback_data=f"cash_account_detail_{cash_account.id}",
         )
     builder.button(
-        text="Добавить счет 🪙",
+        text="Добавить счет ➕💰",
         callback_data="add_new_cash_account_btn",
+        style=ButtonStyle.SUCCESS
     )
     builder.button(
         text="⬅️ Назад",
@@ -51,6 +52,20 @@ def get_cancel_change_account_keyboard(account_id):
     builder = InlineKeyboardBuilder()
     builder.button(
         text=f"❌ Отменить",
+        callback_data=f"cash_account_detail_{account_id}",
+    )
+    builder.adjust(1)
+    return builder.as_markup()
+
+def get_confirm_delete_account_keyboard(account_id):
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=f"⚠️ Удалить счет безвозвратно. ⚠️",
+        callback_data=f"confirm_delete_cash_account_{account_id}",
+        style=ButtonStyle.DANGER
+    )
+    builder.button(
+        text=f"⬅️ Отменить",
         callback_data=f"cash_account_detail_{account_id}",
     )
     builder.adjust(1)

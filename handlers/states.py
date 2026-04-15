@@ -17,6 +17,7 @@ class NavigationStates(StatesGroup):
     waiting_change_account_title = State()    # Ожидание нового названия счета
     waiting_change_account_balance = State()  # Ожидание нового баланса для счета
     waiting_change_account_currency = State() # Ожидание нового currency для счета
+    waiting_confirm_delete_account = State()  # Ожидание подтверждения удаления счета
 
     # profile_menu = State()        # Меню профиля
     # scores_menu = State()         # Меню score

@@ -34,3 +34,6 @@ class CashAccountService:
 
     async def update_account_currency(self, account_id: int, new_currency: str):
         return await self.repo.update_account_currency(account_id=account_id, new_currency=new_currency)
+
+    async def delete_cash_account(self, cash_account_id: int):
+        return await self.repo.delete_cash_account(cash_account_id)

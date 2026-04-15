@@ -8,7 +8,7 @@ from database.models import User
 boss_main_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Получатели", callback_data="employees_list")],
-        [InlineKeyboardButton(text="Сбережения 🪙", callback_data="cash_accounts_list")],
+        [InlineKeyboardButton(text="Сбережения 💰", callback_data="cash_accounts_list")],
     ]
 )
 
