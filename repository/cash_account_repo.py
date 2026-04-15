@@ -48,3 +48,13 @@ class CashAccountRepository:
         )
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
+
+    async def update_account_currency(self, account_id: int, new_currency: str):
+        stmt = (
+            update(CashAccount)
+            .where(CashAccount.id == account_id)
+            .values(currency=new_currency)
+            .returning(CashAccount)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()

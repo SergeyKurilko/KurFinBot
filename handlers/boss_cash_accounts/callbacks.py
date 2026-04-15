@@ -158,7 +158,7 @@ async def change_cash_account_balance(
     user_service: UserService,
 ):
     """
-    Изменение названия счета.
+    Изменение баланса счета.
     Callback_data format: change_cash_account_balance_{cash_account_id}
     Пример: change_cash_account_balance_2
     """
@@ -184,6 +184,49 @@ async def change_cash_account_balance(
 
     cancel_keyboard = get_cancel_change_account_keyboard(cash_account_id)
     text = "Введите новое значение баланса"
+    await callback.message.edit_text(
+        text=text,
+        parse_mode="HTML",
+        reply_markup=cancel_keyboard,
+    )
+
+
+# Изменение currency для счета
+@router.callback_query(lambda c: c.data and c.data.startswith("change_cash_account_currency_"))
+async def change_cash_account_currency(
+    callback: types.CallbackQuery,
+    session: AsyncSession,
+    state: FSMContext,
+    db_user: User,
+    user_service: UserService,
+):
+    """
+    Изменение currency счета.
+    Callback_data format: change_cash_account_currency_{cash_account_id}
+    Пример: change_cash_account_currency_2
+    """
+
+    # Проверяем права
+    if not db_user.is_boss:
+        await callback.answer("⛔ Только для боссов!", show_alert=True)
+        await state.clear()
+        return
+
+    try:
+        cash_account_id_str = callback.data.split("_")[-1]
+        cash_account_id = int(cash_account_id_str)
+    except Exception as e:
+        await callback.answer(f"❌ Ошибка {e}", show_alert=True)
+        return
+
+    await state.set_state(NavigationStates.waiting_change_account_currency)
+    await state.set_data({
+        "cash_account_id": cash_account_id,
+        "original_message_id": callback.message.message_id,
+    })
+
+    cancel_keyboard = get_cancel_change_account_keyboard(cash_account_id)
+    text = "Введите новое значение валюты. Доступно <b>RUB</b> или <b>USD</b>"
     await callback.message.edit_text(
         text=text,
         parse_mode="HTML",

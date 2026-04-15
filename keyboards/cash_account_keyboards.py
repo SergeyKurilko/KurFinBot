@@ -39,7 +39,7 @@ def get_cash_account_detail_keyboard(cash_account_id: int):
     )
     builder.button(
         text="УДАЛИТЬ ⚠️",
-        callback_data=f"delete_cash_account_balance_{cash_account_id}",
+        callback_data=f"delete_cash_account_{cash_account_id}",
         style=ButtonStyle.DANGER,
     )
     builder.button(text="⬅️ Назад", callback_data="cash_accounts_list")
