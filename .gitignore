@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+# Файлы проектов PyCharm
+.idea/misc.xml
+.idea/modules.xml
+
+# Логи и базы данных
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Файлы окружения
+.env
+.env.local
+.env.*.local
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Файлы сборки
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Тестовые покрытия
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
