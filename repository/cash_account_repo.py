@@ -28,3 +28,13 @@ class CashAccountRepository:
     async def get_all_cash_accounts(self):
         stmt = select(CashAccount).order_by(CashAccount.id)
         return (await self.session.execute(stmt)).scalars().all()
+
+    async def update_account_title(self, account_id: int, new_title: str, ) -> CashAccount | None:
+        stmt = (
+            update(CashAccount)
+            .where(CashAccount.id == account_id)
+            .values(title=new_title)
+            .returning(CashAccount)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()

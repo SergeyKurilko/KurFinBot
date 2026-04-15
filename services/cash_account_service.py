@@ -25,3 +25,6 @@ class CashAccountService:
 
     async def get_all_cash_accounts(self):
         return await self.repo.get_all_cash_accounts()
+
+    async def update_account_title(self, account_id: int, new_title: str):
+        return await self.repo.update_account_title(account_id=account_id, new_title=new_title)

@@ -12,6 +12,12 @@ class NavigationStates(StatesGroup):
     change_daily_reward = State()         # Меню изменения размера вознаграждения
     waiting_pay_out_confirm = State()     # Ожидание подтверждения выплаты
 
+    # Cash accounts navigations
+    viewing_accounts_list = State()           # Просмотр списка счетов
+    waiting_change_account_title = State()    # Ожидание нового названия счета
+    waiting_change_account_balance = State()  # Ожидание нового баланса для счета
+    waiting_change_account_currency = State() # Ожидание нового currency для счета
+
     # profile_menu = State()        # Меню профиля
     # scores_menu = State()         # Меню score
     # admin_menu = State()          # Меню администратора
