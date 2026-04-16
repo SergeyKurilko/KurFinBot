@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import CashAccount
 from repository.cash_account_repo import CashAccountRepository
@@ -50,3 +52,31 @@ class CashAccountService:
 
     async def get_usd_course_from_cbr(self):
         return await cbr_courses.get_cbr_usd_course()
+
+    async def get_consolidated_report(self) -> dict | None:
+        all_cash_accounts: List[CashAccount] | [] = await self.repo.get_all_cash_accounts()
+        total_rubles_balance = 0
+        total_usd_balance = 0
+        for cash_account in all_cash_accounts:
+            if cash_account.currency == "RUB":
+                total_rubles_balance += cash_account.balance
+            elif cash_account.currency == "USD":
+                total_usd_balance += cash_account.balance
+
+        # Попытка получить курс валюты
+        if total_usd_balance > 0:
+            try:
+                usd_course = await self.get_usd_course_from_cbr()
+                if usd_course and isinstance(usd_course, int):
+                    to_add = usd_course * total_usd_balance
+                    total_rubles_balance += to_add
+            except Exception:
+                pass
+
+        if all_cash_accounts:
+            return {
+                "all_cash_accounts": all_cash_accounts,
+                "total_rubles_balance": total_rubles_balance,
+                "total_usd_balance": total_usd_balance
+            }
+        return None

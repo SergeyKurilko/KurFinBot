@@ -3,7 +3,7 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.models import User
+from database.models import User, CashAccount
 from services.user_service import UserService
 from services.cash_account_service import CashAccountService
 from handlers.states import NavigationStates
@@ -13,6 +13,7 @@ from keyboards.cash_account_keyboards import (
     get_cash_account_detail_keyboard,
     get_cancel_change_account_keyboard,
     get_confirm_delete_account_keyboard,
+    get_back_to_accounts_list_keyboard,
 )
 
 router = Router()
@@ -392,3 +393,48 @@ async def create_cash_account(
     else:
         await callback.answer(text="Не удалось создать счет", show_alert=True)
         return
+
+
+# Получение сводного отчета по счетам
+@router.callback_query(
+    lambda c: c.data and c.data.startswith("get_consolidated_report")
+)
+async def get_consolidated_report_callback(
+    callback: types.CallbackQuery,
+    session: AsyncSession,
+    state: FSMContext,
+    db_user: User,
+    user_service: UserService,
+):
+    # Проверяем права
+    if not db_user.is_boss:
+        await callback.answer("⛔ Только для боссов!", show_alert=True)
+        await state.clear()
+        return
+
+    cash_account_service = CashAccountService(session)
+    report = await cash_account_service.get_consolidated_report()
+    #             return {
+    #                 "all_cash_accounts": all_cash_accounts,
+    #                 "total_rubles_balance": total_rubles_balance,
+    #                 "total_usd_balance": total_usd_balance
+    #             }
+    if report:
+        await callback.answer("Отчет сформирован", show_alert=True)
+        all_cash_accounts: list[CashAccount] | [] = report.get("all_cash_accounts", [])
+        total_rubles_balance: int = report.get("total_rubles_balance", 0)
+        total_usd_balance: int = report.get("total_usd_balance", 0)
+        report_text = f"Всего <b>{total_rubles_balance}</b> руб.\n"
+        if total_usd_balance:
+            report_text += f"----------\nИз них: \nв USD: {total_usd_balance}"
+        report_text += "\n<b>----------</b>\n"
+        report_text += f"Всего счетов: {len(all_cash_accounts)}\n"
+        for cash_account in all_cash_accounts:
+            report_text += (
+                f"<b>{cash_account.title}</b>: {cash_account.balance} {cash_account.currency}\n"
+            )
+        await callback.message.edit_text(
+            text=report_text, reply_markup=get_back_to_accounts_list_keyboard()
+        )
+    else:
+        await callback.answer("Не удалось сформировать отчет. Попробуйте позже.", show_alert=True)

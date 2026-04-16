@@ -2,6 +2,11 @@ from aiogram.enums import ButtonStyle
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from database.models import CashAccount
 
+def get_back_to_accounts_list_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="⬅️ Назад", callback_data="cash_accounts_list")
+    builder.adjust(1)
+    return builder.as_markup()
 
 def get_cash_accounts_keyboard(cash_accounts: list[CashAccount]):
     """Основное меню для employee"""
@@ -10,6 +15,12 @@ def get_cash_accounts_keyboard(cash_accounts: list[CashAccount]):
         builder.button(
             text=f"{cash_account.title}",
             callback_data=f"cash_account_detail_{cash_account.id}",
+        )
+    if cash_accounts:
+        builder.button(
+            text="Сводный отчет 📊",
+            callback_data="get_consolidated_report",
+            style=ButtonStyle.PRIMARY,
         )
     builder.button(
         text="Добавить счет ➕💰",
