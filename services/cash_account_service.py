@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import CashAccount
 from repository.cash_account_repo import CashAccountRepository
-
+from utils import cbr_courses
 
 class CashAccountService:
     """Сервис для работы с CashAccount"""
@@ -21,7 +21,17 @@ class CashAccountService:
             return None
 
     async def get_cash_account_by_id(self, cash_account_id: int) -> CashAccount | None:
-        return await self.repo.get_cash_account_by_id(cash_account_id)
+        cash_account = await self.repo.get_cash_account_by_id(cash_account_id)
+        if cash_account and cash_account.currency == "USD":
+            usd_course = None
+            try:
+                usd_course = await self.get_usd_course_from_cbr()
+            except Exception:
+                pass
+            if usd_course and isinstance(usd_course, int):
+                balance_in_rubles = cash_account.balance * usd_course
+                cash_account.balance_in_rubles = balance_in_rubles
+        return cash_account
 
     async def get_all_cash_accounts(self):
         return await self.repo.get_all_cash_accounts()
@@ -37,3 +47,6 @@ class CashAccountService:
 
     async def delete_cash_account(self, cash_account_id: int):
         return await self.repo.delete_cash_account(cash_account_id)
+
+    async def get_usd_course_from_cbr(self):
+        return await cbr_courses.get_cbr_usd_course()

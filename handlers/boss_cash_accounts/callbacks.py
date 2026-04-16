@@ -104,6 +104,8 @@ async def get_cash_account_detail(
         f"<b>{cash_account.title}</b>\n"
         f"<i>Баланс</i>: {cash_account.balance} {cash_account.currency}"
     )
+    if balance_in_rubles := cash_account.__dict__.get("balance_in_rubles"):
+        text += f"\nВ рублях примерно: {balance_in_rubles} руб."
     await callback.message.edit_text(
         text=text,
         parse_mode="HTML",
