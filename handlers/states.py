@@ -11,6 +11,7 @@ class NavigationStates(StatesGroup):
     waiting_score_number_remove = State() # Ожидание количества убавляемых score
     change_daily_reward = State()         # Меню изменения размера вознаграждения
     waiting_pay_out_confirm = State()     # Ожидание подтверждения выплаты
+    waiting_pay_out_partial_input = State() # Ожидание суммы для частичной выплаты
 
     # Cash accounts navigations
     viewing_accounts_list = State()           # Просмотр списка счетов

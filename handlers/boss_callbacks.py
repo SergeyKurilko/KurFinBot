@@ -14,6 +14,7 @@ from keyboards.inline import (
     reduce_score_keyboard,
     change_daily_reward_keyboard,
     pay_out_waiting_keyboard,
+    pay_out_partial_keyboard,
 )
 
 router = Router()
@@ -439,3 +440,36 @@ async def confirm_pay_out(
     except Exception as e:
         await callback.answer(f"❌ Ошибка при выплате: {e}", show_alert=True)
         await state.clear()
+
+
+@router.callback_query(lambda c: c.data and c.data.startswith("pay_out_partial_menu_"))
+async def pay_out_partial(
+    callback: types.CallbackQuery,
+    session: AsyncSession,
+    state: FSMContext,
+    db_user: User,
+    user_service: UserService,
+):
+    """
+    Меню ручного убавления score для получателя.
+    Callback_data format: remove_score_<employee_id>_<money_id>
+    Пример: remove_score_1575703477_2
+    """
+    # Извлекаем ID сотрудника и ID Money из callback_data
+    try:
+        employee_id_str = callback.data.split("_")[-2]
+        money_id_str = callback.data.split("_")[-1]
+        employee_id = int(employee_id_str)
+        money_id = int(money_id_str)
+    except ValueError:
+        await callback.answer("❌ Неверный формат данных", show_alert=True)
+        return
+    await state.set_state(NavigationStates.waiting_pay_out_partial_input)
+    await state.update_data(
+        employee_id=employee_id,
+        money_id=money_id,
+        original_message_id=callback.message.message_id,
+    )
+    keyboard = pay_out_partial_keyboard(employee_id=employee_id)
+    text = "Введите сумму для выплаты"
+    await callback.message.edit_text(text, parse_mode="HTML", reply_markup=keyboard)

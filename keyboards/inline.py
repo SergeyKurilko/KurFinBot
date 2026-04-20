@@ -8,21 +8,29 @@ from database.models import User
 boss_main_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Получатели", callback_data="employees_list")],
-        [InlineKeyboardButton(text="Сбережения 💰", callback_data="cash_accounts_list")],
+        [
+            InlineKeyboardButton(
+                text="Сбережения 💰", callback_data="cash_accounts_list"
+            )
+        ],
     ]
 )
+
 
 def get_employees_main_keyboard(employee_id):
     """Основное меню для employee"""
     builder = InlineKeyboardBuilder()
-    builder.button(text="👤 Мой профиль", callback_data=f"my_employee_profile_{employee_id}")
+    builder.button(
+        text="👤 Мой профиль", callback_data=f"my_employee_profile_{employee_id}"
+    )
     builder.adjust(1)
     return builder.as_markup()
+
 
 def get_employee_my_profile_keyboard():
     """Меню при просмотре своего профиля для employee"""
     builder = InlineKeyboardBuilder()
-    builder.button(text="⬅️ Назад", callback_data=f"employee_main_menu")
+    builder.button(text="⬅️ Назад", callback_data="employee_main_menu")
     builder.adjust(1)
     return builder.as_markup()
 
@@ -43,14 +51,24 @@ def get_employee_actions_keyboard(employee_id, money_id):
     """Действия с получателем"""
     builder = InlineKeyboardBuilder()
     builder.button(
-        text="💸 Выплатить бонус 💸", callback_data=f"pay_out_menu_{employee_id}_{money_id}"
+        text="💸 Выплатить бонус полностью💸",
+        callback_data=f"pay_out_menu_{employee_id}_{money_id}",
     )
-    builder.button(text="➕ Добавить очки", callback_data=f"add_score_{employee_id}_{money_id}")
-    builder.button(text="➖ Списать очки", callback_data=f"remove_score_{employee_id}_{money_id}")
     builder.button(
-        text="⚙️ Изменить бонус", callback_data=f"change_daily_reward_{employee_id}_{money_id}"
+        text="💸 Выплатить бонус частично💸",
+        callback_data=f"pay_out_partial_menu_{employee_id}_{money_id}",
     )
-    builder.button(text="⬅️ Назад", callback_data=f"employees_list")
+    builder.button(
+        text="➕ Добавить очки", callback_data=f"add_score_{employee_id}_{money_id}"
+    )
+    builder.button(
+        text="➖ Списать очки", callback_data=f"remove_score_{employee_id}_{money_id}"
+    )
+    builder.button(
+        text="⚙️ Изменить бонус",
+        callback_data=f"change_daily_reward_{employee_id}_{money_id}",
+    )
+    builder.button(text="⬅️ Назад", callback_data="employees_list")
     builder.adjust(1)
     return builder.as_markup()
 
@@ -65,6 +83,7 @@ def add_score_keyboard(money_id, employee_id):
     builder.adjust(1)
     return builder.as_markup()
 
+
 def reduce_score_keyboard(money_id, employee_id):
     """Выбор количества очков для убавления"""
     builder = InlineKeyboardBuilder()
@@ -75,6 +94,7 @@ def reduce_score_keyboard(money_id, employee_id):
     builder.adjust(1)
     return builder.as_markup()
 
+
 def change_daily_reward_keyboard(employee_id):
     """Клавиатура во время ожидания введения нового daily_reward"""
     builder = InlineKeyboardBuilder()
@@ -82,10 +102,21 @@ def change_daily_reward_keyboard(employee_id):
     builder.adjust(1)
     return builder.as_markup()
 
+
 def pay_out_waiting_keyboard(employee_id):
     """Клавиатура во время ожидания подтверждения списания"""
     builder = InlineKeyboardBuilder()
-    builder.button(text="Подтверждаю выплату ✅️", callback_data="confirm_pay_out_waiting")
+    builder.button(
+        text="Подтверждаю выплату ✅️", callback_data="confirm_pay_out_waiting"
+    )
     builder.button(text="⬅️ Назад", callback_data=f"employee_profile_{employee_id}")
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def pay_out_partial_keyboard(employee_id):
+    """Клавиатура во время ожидания суммы частичного списания"""
+    builder = InlineKeyboardBuilder()
+    builder.button(text="⬅️ Отменить", callback_data=f"employee_profile_{employee_id}")
     builder.adjust(1)
     return builder.as_markup()

@@ -5,7 +5,7 @@ from database.models import Money
 
 
 class MoneyService:
-    """Сервис для работы с пользователями"""
+    """Сервис для работы с Money"""
 
     def __init__(self, session: AsyncSession):
         self.repo = MoneyRepository(session)
@@ -50,3 +50,10 @@ class MoneyService:
             # Списание будет только, если баланс больше 0 и есть такой объект Money
             raise ValueError("Списание не удалось.")
         return money
+
+    async def pay_out_partial(self, money_id: int, amount: int) -> Optional[Money]:
+        """Выплатить частично."""
+        updated_money = await self.repo.pay_out_partial(money_id, amount)
+        if updated_money is None:
+            raise ValueError("Списание не удалось.")
+        return updated_money

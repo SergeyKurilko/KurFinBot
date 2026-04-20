@@ -60,7 +60,6 @@ class MoneyRepository:
         await self.session.commit()
         return result.scalar_one_or_none()
 
-
     async def pay_out(self, money_id: int) -> Optional[Money]:
         """Выплатить. Сбрасывает scores и balance в 0.
         Выплата возможна только если баланс не отрицательный.
@@ -75,3 +74,17 @@ class MoneyRepository:
         result = await self.session.execute(stmt)
         await self.session.commit()
         return result.scalar_one_or_none()
+
+    async def pay_out_partial(self, money_id, amount):
+        """Списание amount из balance."""
+        stmt = (
+            update(Money)
+            .where(Money.id == money_id)
+            .values(
+                balance=Money.balance - amount,
+            )
+            .returning(Money)
+        )
+        result = await self.session.execute(stmt)
+        updated_money = result.scalar_one_or_none()
+        return updated_money
