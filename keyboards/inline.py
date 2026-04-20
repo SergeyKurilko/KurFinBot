@@ -51,11 +51,11 @@ def get_employee_actions_keyboard(employee_id, money_id):
     """Действия с получателем"""
     builder = InlineKeyboardBuilder()
     builder.button(
-        text="💸 Выплатить бонус полностью💸",
+        text="💰 Выплатить бонус полностью 💰",
         callback_data=f"pay_out_menu_{employee_id}_{money_id}",
     )
     builder.button(
-        text="💸 Выплатить бонус частично💸",
+        text="💸 Выплатить бонус частично 💸",
         callback_data=f"pay_out_partial_menu_{employee_id}_{money_id}",
     )
     builder.button(
