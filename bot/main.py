@@ -99,9 +99,10 @@ async def main():
     """Главная функция запуска"""
 
     # 1. Создаем бота
-    proxy_url = config.proxy
-    bot_session = AiohttpSession(proxy=proxy_url)
-    bot = Bot(token=config.token, default=DefaultBotProperties(parse_mode='HTML'), session=bot_session)
+    # proxy_url = config.proxy
+    # bot_session = AiohttpSession(proxy=proxy_url)
+    # bot = Bot(token=config.token, default=DefaultBotProperties(parse_mode='HTML'), session=bot_session)
+    bot = Bot(token=config.token, default=DefaultBotProperties(parse_mode='HTML'))
 
     # 2. Выбираем хранилище для FSM (Finite State Machine)
     if config.environment == "production":
