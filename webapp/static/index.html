@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KurfinBot Mini App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>🚀 KurfinBot</h1>
+            <p id="user-status">Загрузка...</p>
+        </header>
+
+        <main>
+            <div id="content">
+                <p id="content-header">Добро пожаловать в Mini App!</p>
+                <div id="main-menu-buttons">
+                    <button id="cashAccountsList" class="main-button" onclick="getAllCashAccounts()">Все счета</button>
+                </div>
+                
+                <div id="result" style="display: none;"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2026 KurfinBot</p>
+        </footer>
+    </div>
+
+    <!-- Подключаем Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Наш JS -->
+    <script type="module" src="/static/app.js"></script>
+</body>
+</html>
