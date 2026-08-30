@@ -1,8 +1,9 @@
 from typing import List
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot.config import config
 from database.models import User
 
 boss_main_keyboard = InlineKeyboardMarkup(
@@ -11,6 +12,12 @@ boss_main_keyboard = InlineKeyboardMarkup(
         [
             InlineKeyboardButton(
                 text="Сбережения 💰", callback_data="cash_accounts_list"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="🚀 Открыть панель",
+                web_app=WebAppInfo(url=config.webapp_url),  # URL из конфига
             )
         ],
     ]

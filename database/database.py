@@ -36,6 +36,19 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         finally:
             await session.close()  # Закрываем сессию
 
+# ДЛЯ FASTAPI: Dependency Injection
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    """Генератор сессии для FastAPI (используется с Depends)"""
+    async with async_session_factory() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+
 
 async def init_db():
     async with engine.begin() as conn:
