@@ -136,6 +136,8 @@ export const Accounts = {
         const resultDiv = document.getElementById('result');
         const contentHeader = document.getElementById('content-header');
         const cashAccountsListButton = document.getElementById('cashAccountsList');
+        const TotalBalanceButton = document.getElementById("TotalBalance")
+        TotalBalanceButton.remove()
         resultDiv.style.display = 'block';
         resultDiv.textContent = '⏳ Загрузка...';
 
@@ -178,6 +180,69 @@ export const Accounts = {
             const addNewAccountButton = document.getElementById("addNewAccount");
             addNewAccountButton.onclick = Accounts.confirmCreateNewAccount.bind(this);
 
+        } catch (error) {
+            console.error('Ошибка:', error);
+            resultDiv.textContent = '❌ Ошибка загрузки';
+        }
+    },
+
+    // Получение общего отчета
+    async getTotalBalance() {
+        const resultDiv = document.getElementById('result');
+        const contentHeader = document.getElementById('content-header');
+        const cashAccountsListButton = document.getElementById('cashAccountsList');
+        cashAccountsListButton.remove()
+        const TotalBalanceButton = document.getElementById("TotalBalance")
+        resultDiv.style.display = 'block';
+        resultDiv.textContent = '⏳ Загрузка...';
+
+        try {
+            const totalBalanceReport = await fetch('/api/cash/total-balance', {
+                headers: {
+                    'X-Telegram-Init-Data': window.initData // Используем window.initData
+                }
+            });
+            const totalBalanceReportData = await totalBalanceReport.json();
+            const cashAccountsList = totalBalanceReportData.total_balance_report.all_cash_accounts;
+            const totalRublesBalance = totalBalanceReportData.total_balance_report.total_rubles_balance;
+            const inUsdBalance = totalBalanceReportData.total_balance_report.total_usd_balance;
+            contentHeader.textContent = 'Сводный отчет';
+
+            TotalBalanceButton.textContent = 'Назад';
+            TotalBalanceButton.onclick = window.goToHomePage;
+
+            let cardsHTML = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+            const isPositiveNumber = (v) => typeof v === 'number' && Number.isFinite(v) && v > 0;
+
+            // Проверяем totalRublesBalance
+            if (isPositiveNumber(totalRublesBalance)) {
+                cardsHTML += `<div class="total-balance-report">`;
+                cardsHTML += `<h3>Всего: <b>${totalRublesBalance}</b> руб.</h3>`;
+
+                // Проверяем inUsdBalance отдельно
+                if (isPositiveNumber(inUsdBalance)) {
+                    cardsHTML += `<div>Из них в USD: <b>${inUsdBalance}</b>$</div>`;
+                }
+
+                cardsHTML += `</div>`;
+            }
+
+            cardsHTML += '</div>';
+
+            if (Array.isArray(cashAccountsList) && cashAccountsList.length > 0) {
+                cashAccountsList.forEach((cashAccount) => {
+                    cardsHTML += `
+                        <div class="cash-account-report-card">
+                                <span style="font-weight: 500; overflow: hidden; text-overflow: ellipsis;">${cashAccount.title || '-'}</span>
+                                <span style="color: #666; font-size: 14px;">${cashAccount.balance || '0'} ${cashAccount.currency || ''}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                cardsHTML += '📭 Нет доступных счетов';
+            }
+            cardsHTML += '</div>';
+            resultDiv.innerHTML = cardsHTML;
         } catch (error) {
             console.error('Ошибка:', error);
             resultDiv.textContent = '❌ Ошибка загрузки';

@@ -281,3 +281,32 @@ async def create_cash_account(
     except Exception as e:
         await db_session.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/total-balance")
+async def get_total_balance(
+    init_data: str = Header(..., alias="X-Telegram-Init-Data"),
+    db_session=Depends(get_db_session),
+):
+    """
+    Общий баланс
+    """
+    try:
+        # Проверяем подпись
+        telegram_user = verify_telegram_init_data(init_data)
+        user_service = UserService(db_session)
+        # Получаем пользователя из БД
+        user = await user_service.get_user(telegram_user["id"])
+
+        if not user:
+            return {"status": "error", "message": "User not found"}
+
+        if user.is_boss:
+            cash_account_service = CashAccountService(db_session)
+            total_balance_report = await cash_account_service.get_consolidated_report()
+            return {"status": "ok", "total_balance_report": total_balance_report}
+
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

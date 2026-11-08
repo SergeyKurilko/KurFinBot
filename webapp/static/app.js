@@ -63,10 +63,13 @@ async function authenticate() {
         const MainMenuButtons = document.getElementById("main-menu-buttons");
         if (data.user.is_boss) {
             MainMenuButtons.innerHTML = `
-                <button id="cashAccountsList" class="main-button">Все счета</button>
+            <button id="cashAccountsList" class="main-button">Все счета</button>
+            <button id="TotalBalance" class="main-button">Общий баланс</button>
             `
             const cashAccountsListButton = document.getElementById("cashAccountsList")
+            const TotalBalanceButton = document.getElementById("TotalBalance")
             cashAccountsListButton.onclick = Accounts.getAllCashAccounts
+            TotalBalanceButton.onclick = Accounts.getTotalBalance
         } else {
             MainMenuButtons.innerHTML = `
                 Нет доступа к счетам
@@ -138,9 +141,12 @@ function goToHomePage() {
     if (window.currentUser.is_boss) {
         MainMenuButtons.innerHTML = `
             <button id="cashAccountsList" class="main-button">Все счета</button>
+            <button id="TotalBalance" class="main-button">Общий баланс</button>
         `
         const cashAccountsListButton = document.getElementById("cashAccountsList")
+        const TotalBalanceButton = document.getElementById("TotalBalance")
         cashAccountsListButton.onclick = Accounts.getAllCashAccounts
+        TotalBalanceButton.onclick = Accounts.getTotalBalance
     } else {
         MainMenuButtons.innerHTML = `
             Нет доступа к счетам

@@ -104,6 +104,22 @@ footer {
     border: 0.5px solid;
 }
 
+.cash-account-report-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+    /*border-radius: 8px;*/
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 0.5px solid;
+}
+
+.total-balance-report {
+    text-align: start;
+    padding: 6px;
+}
+
 .cash-account-row {
     display: flex; 
     align-items: flex-start;
@@ -236,6 +252,12 @@ footer {
     background-color: #999999;
 }
 
+#main-menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 
 /* Адаптация под тему Telegram */
 @media (prefers-color-scheme: dark) {
@@ -247,3 +269,4 @@ footer {
         box-shadow: 0 2px 8px rgba(255,255,255,0.05);
     }
 }
+
